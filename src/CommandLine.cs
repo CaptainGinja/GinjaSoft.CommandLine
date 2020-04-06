@@ -63,19 +63,20 @@ namespace GinjaSoft.CommandLine
         Trace("<< Trace");
       }
 
-      if(newArgs.Length == 0) throw new CommandLineException("Expected command is missing");
-
-      var firstArg = newArgs[0];
-      if(firstArg == "-h" || firstArg == "--help") {
-        Console.WriteLine(Usage());
-        return 0;
+      if(newArgs.Length > 0) {
+        if(newArgs[0] == "-h" || newArgs[0] == "--help") {
+          Console.WriteLine(Usage());
+          return 0;
+        }
       }
 
       if(_implicitCommand != null) return _implicitCommand.Invoke(newArgs);
 
+      if(newArgs.Length == 0) throw new CommandLineException("Expected command is missing");
+
       Command command;
-      if(!_commands.TryGetValue(firstArg, out command))
-        throw new CommandLineException($"Unknown command: {firstArg}");
+      if(!_commands.TryGetValue(newArgs[0], out command))
+        throw new CommandLineException($"Unknown command: {newArgs[0]}");
 
       var remainingArgs = newArgs.Skip(1).Take(newArgs.Length - 1).ToArray();
       return command.Invoke(remainingArgs);

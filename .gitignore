@@ -7,3 +7,5 @@
 *.DotSettings.user
 *.user
 *.suo
+tests/coverage.json
+

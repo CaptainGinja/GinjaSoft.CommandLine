@@ -68,10 +68,12 @@ namespace GinjaSoft.CommandLine
 
     public override int Invoke(string[] args)
     {
-      var firstArg = args[0];
-      if(firstArg == "-h" || firstArg == "--help") {
-        Console.WriteLine(CommandLine.Usage(this));
-        return 0;
+      if(args.Length > 0) {
+        var firstArg = args[0];
+        if(firstArg == "-h" || firstArg == "--help") {
+          Console.WriteLine(CommandLine.Usage(this));
+          return 0;
+        }
       }
 
       if(args.Length % 2 != 0) throw new CommandLineException("Mismatch in parameter names and values");
