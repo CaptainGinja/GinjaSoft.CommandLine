@@ -14,7 +14,7 @@
     public Bar(string s)
     {
       var tokens = s.Split('|');
-      if(tokens.Length != 2) throw new InvalidOperationException("A Bar can only have two parts");
+      if(tokens.Length != 2) throw new InvalidOperationException("A Bar requires a string arg of the form '<a>|<b>'");
       _first = tokens[0];
       _second = tokens[1];
     }

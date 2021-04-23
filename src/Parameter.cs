@@ -9,6 +9,7 @@ namespace GinjaSoft.CommandLine
   public abstract class Parameter
   {
     protected readonly string _name;
+    protected readonly Type _type;
     protected readonly string _description;
     protected readonly string _propertyName;
     protected List<string> _aliases;
@@ -17,7 +18,7 @@ namespace GinjaSoft.CommandLine
     protected bool _optional;
 
 
-    protected Parameter(string name, string description)
+    protected Parameter(string name, Type type, string description)
     {
       var lowerName = name.Trim().ToLower();
       const string pattern = @"^([a-z0-9]+[-]?)*[a-z0-9]+$";
@@ -25,6 +26,7 @@ namespace GinjaSoft.CommandLine
         throw new CommandLineSpecException($"Bad parameter name '{name}'. Name must match {pattern}");
 
       _name = lowerName;
+      _type = type;
       _description = description;
       _aliases = new List<string>();
       _wasParsed = false;
@@ -37,6 +39,7 @@ namespace GinjaSoft.CommandLine
 
 
     public string Name => _name;
+    public Type Type => _type;
     public string Description => _description;
     public string PropertyName => _propertyName;
     public bool WasParsed => _wasParsed;
@@ -79,7 +82,7 @@ namespace GinjaSoft.CommandLine
     private T _value;
 
 
-    public Parameter(string name, string description) : base(name, description)
+    public Parameter(string name, string description) : base(name, typeof(T), description)
     {
       _optional = false;
       _defaultValue = default(T);

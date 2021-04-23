@@ -109,19 +109,18 @@ namespace GinjaSoft.CommandLine
       if(_implicitCommand == null) {
         builder.AppendLine("Commands:");
         var commandNames = _commands.Keys.OrderBy(s => s).ToArray();
-        builder.AppendLine(UsageCommands(commandNames));
-        builder.AppendLine();
-        foreach(var commandName in commandNames) {
-          builder.AppendLine(UsageParameters(_commands[commandName], commandName));
-          builder.AppendLine();
-        }
+        builder.Append(UsageCommands(commandNames));
+        //builder.AppendLine();
+        //foreach(var commandName in commandNames) {
+        //  builder.AppendLine(UsageParameters(_commands[commandName], commandName));
+        //  builder.AppendLine();
+        //}
       }
       else {
         builder.AppendLine(UsageParameters(_implicitCommand, null));
         builder.AppendLine();
+        builder.Append(UsageFooter());
       }
-
-      builder.Append(UsageFooter());
 
       return builder.ToString();
     }
@@ -164,22 +163,47 @@ namespace GinjaSoft.CommandLine
 
       var paramNames = command.Parameters.Keys.OrderBy(s => s).ToList();
       var table = new StringTableBuilder();
-      table.AddColumn("col1");
-      table.AddColumn("col2");
-      table.AddColumn("col3");
+      table.AddColumn("space0");
+      table.AddColumn("name");
+      table.AddColumn("space1");
+      table.AddColumn("alias");
+      table.AddColumn("space2");
+      table.AddColumn("default-value");
+      table.AddColumn("space3");
+      table.AddColumn("type");
+      table.AddColumn("space4");
+      table.AddColumn("description");
+      var headerRow = table.AddRow();
+      headerRow.SetCell("space0", "  ");
+      headerRow.SetCell("name", "name");
+      headerRow.SetCell("space1", "  ");
+      headerRow.SetCell("alias", "alias");
+      headerRow.SetCell("space2", "  ");
+      headerRow.SetCell("default-value", "default-value");
+      headerRow.SetCell("space3", "  ");
+      headerRow.SetCell("type", "type");
+      headerRow.SetCell("space4", "  ");
+      headerRow.SetCell("description", "description");
       foreach(var paramName in paramNames) {
         var param = command.Parameters[paramName];
         var row = table.AddRow();
-        row.SetCell("col1", $"  {ParamKey(param)}");
-        row.SetCell("col2", param.Optional ? $"  ?:{param.DefaultValue}" : "");
-        row.SetCell("col3", $"  {param.Description}");
+        row.SetCell("space0", "  ");
+        row.SetCell("name", $"--{param.Name}");
+        row.SetCell("space1", "  ");
+        row.SetCell("alias", $"{AliasKey(param)}");
+        row.SetCell("space2", "  ");
+        row.SetCell("default-value", param.Optional ? $"{param.DefaultValue}" : "");
+        row.SetCell("space3", "  ");
+        row.SetCell("type", $"{param.Type.Name}");
+        row.SetCell("space4", "  ");
+        row.SetCell("description", $"{param.Description}");
       }
       builder.Append(table.ToString());
 
       return builder.ToString();
     }
 
-    private static string ParamKey(Parameter param)
+    private static string AliasKey(Parameter param)
     {
       var builder = new StringBuilder();
       var count = 0;
@@ -188,8 +212,6 @@ namespace GinjaSoft.CommandLine
         builder.Append($"-{alias}");
         ++count;
       }
-      if(count > 0) builder.Append("|");
-      builder.Append($"--{param.Name}");
       return builder.ToString();
     }
 
